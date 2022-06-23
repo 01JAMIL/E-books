@@ -29,4 +29,8 @@ app.use('/api/book', bookRouter);
 app.use('/api/author', authorRouter) ;
 app.use('/api/user', userRouter) ;
 
+// use the upload folder to get images 
+app.use('/uploads', express.static(
+    path.join(__dirname, '/uploads')
+))
 module.exports = app;

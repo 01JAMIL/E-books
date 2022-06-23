@@ -1,13 +1,24 @@
+import axios from 'axios'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { validateStepThreeForm } from '../validation/RegisterFormValidation'
 export const StepThreeForm = ({ form, setForm, prevStep }) => {
 
     const [formErrors, setErrors] = useState({})
+    const navigate = useNavigate()
 
     const changeHandler = (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
+        })
+    }
+
+    const registerUser = async () => {
+        await axios.post('/api/user', form).then(res => {
+            navigate('/signin', { replace: true })
+        }).catch(err => {
+            console.log(err)
         })
     }
 
@@ -19,7 +30,7 @@ export const StepThreeForm = ({ form, setForm, prevStep }) => {
         if (!valid) {
             setErrors(errors)
         } else {
-            console.log(form)
+            registerUser()
         }
     }
 

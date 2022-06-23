@@ -1,7 +1,7 @@
 const validator = require('validator')
 const isEmpty = require('./isEmplty')
 
-module.exports = function validateUser(data) {
+const validateUser = (data) => {
     let errors = {}
 
     data.firstName = !isEmpty(data.firstName) ? data.firstName : ''
@@ -12,7 +12,7 @@ module.exports = function validateUser(data) {
     data.birthday = !isEmpty(data.birthday) ? data.birthday : ''
     data.login = !isEmpty(data.login) ? data.login : ''
     data.password = !isEmpty(data.password) ? data.password : ''
-    
+
     if (validator.isEmpty(data.firstName)) {
         errors.firstNameError = 'First name is required!'
     }
@@ -33,7 +33,7 @@ module.exports = function validateUser(data) {
         errors.phoneError = 'Phone is required!'
     }
 
-    if (!validator.isMobilePhone(data.phone, ['ar-TN'], {strictMode: true})) {
+    if (!validator.isMobilePhone(data.phone, ['ar-TN'], { strictMode: true })) {
         errors.phoneError = 'Phone format must be like +216 ** *** ***'
     }
 
@@ -57,4 +57,34 @@ module.exports = function validateUser(data) {
         errors,
         validUser: isEmpty(errors)
     }
+}
+
+
+const validateLoginForm = (data) => {
+    let errors = {}
+    data.email = !isEmpty(data.email) ? data.email : ''
+    data.password = !isEmpty(data.password) ? data.password : ''
+
+    
+    if (!validator.isEmail(data.email)) {
+        errors.emailError = 'Format email is missing!'
+    }
+
+    if (validator.isEmpty(data.email)) {
+        errors.emailError = 'Email is required!'
+    }
+
+    if (validator.isEmpty(data.password)) {
+        errors.passwordError = 'Password is required!'
+    }
+
+    return {
+        errors,
+        validUser: isEmpty(errors)
+    }
+}
+
+module.exports = {
+    validateUser,
+    validateLoginForm
 }

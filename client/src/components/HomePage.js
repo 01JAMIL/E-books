@@ -1,9 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import phoneLogo from '../assets/phone.png'
 import pcLogo from '../assets/pc.png'
 import devopsLogo from '../assets/devops.png'
+import axios from 'axios'
+import { Author } from './Author'
 
 export const HomePage = () => {
+
+
+    const [books, setBooks] = useState([])
+
+    useEffect(() => {
+        const getBooks = async () => {
+            await axios.get('/api/book').then(res => {
+                setBooks(res.data)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+
+        getBooks()
+    }, [])
+
     return (
         <>
             <div className="p-2">
@@ -60,34 +78,49 @@ export const HomePage = () => {
 
                     <div className="books-list h-auto">
                         <div className="book-list-row p-1 h-auto flex justify-center flex-wrap">
-                            <div className="max-w-md mx-auto bg-white rounded drop-shadow-md overflow-hidden md:w-full md:max-w-2xl mb-4">
-                                <div className="md:flex">
-                                    <div className="md:shrink-0 p-1">
-                                        <img className="h-62 w-full rounded object-cover md:h-full md:w-72" src="https://i.pinimg.com/564x/01/ba/52/01ba5280ed11b9c00fc9a909374401bc.jpg" alt="Man looking at item at a store" />
-                                    </div>
-                                    <div className="p-8 md:flex md:justify-center w-full">
-                                        <div>
-                                            <div className="uppercase tracking-wide text-sm text-yellow-500 font-semibold">Book name</div>
-                                            <div className="block mt-1 text-lg leading-tight font-medium text-black">Author name</div>
-                                            <div className="mt-4">
-                                                <div className="mt-2 text-black">Description</div>
-                                                <small className="block mx-2 my-2">
-                                                    Country: USA
-                                                </small>
-                                                <small className="block mx-2 my-2">
-                                                    Language: English
-                                                </small>
-                                                <small className="block mx-2 my-2">
-                                                    Pages: 125
-                                                </small>
-                                                <small className="block mx-2 my-2">
-                                                    Year: 2015
-                                                </small>
+                            {books.map(book => (
+                                <div key={book._id} className="max-w-md mx-auto bg-white rounded drop-shadow-md overflow-hidden md:w-full md:max-w-2xl mb-4">
+                                    <div className="md:flex">
+                                        <div className="md:shrink-0 p-1">
+                                            <img className="h-62 w-full rounded object-cover md:h-full md:w-72" src={`../../../uploads/${book.image}`} />
+                                        </div>
+                                        <div className="p-8 md:flex md:justify-center w-full">
+                                            <div>
+                                                <div className="uppercase tracking-wide text-sm text-yellow-500 font-semibold"> {book.title} </div>
+                                                <div className="block mt-1 text-lg leading-tight font-medium text-black">
+                                                    <Author
+                                                        id={book.author}
+                                                    />
+                                                </div>
+                                                <div className="mt-4">
+                                                    <div className="mt-2 text-black">Description</div>
+                                                    <small className="block mx-2 my-2">
+                                                        Country: {book.country}
+                                                    </small>
+                                                    <small className="block mx-2 my-2">
+                                                        Language: {book.language}
+                                                    </small>
+                                                    <small className="block mx-2 my-2">
+                                                        Pages: {book.pages}
+                                                    </small>
+                                                    <small className="block mx-2 my-2">
+                                                        Year: {book.year.substr(-4)}
+                                                    </small>
+                                                </div>
+
+                                                <div className="flex mt-6">
+                                                    <button className="m-2">Download book</button>
+                                                    <button className="m-2">Love book</button>
+                                                </div>
                                             </div>
+
+
+
                                         </div>
                                     </div>
+
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

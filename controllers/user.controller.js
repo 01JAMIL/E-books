@@ -1,6 +1,6 @@
 const userModel = require('../models/user.model')
 const bcrypt = require('bcrypt')
-const validateUser = require('../validation/user.validation')
+const { validateUser, validateLoginForm } = require('../validation/user.validation')
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
@@ -53,31 +53,23 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
+    const { errors, validUser } = validateLoginForm(req.body)
+
     try {
-        const { email, password } = req.body
-
-        if (!email || !password || !validator.isEmail(email)) {
-            res.status(404).json(
-                { message: 'User data not valid' }
-            )
+        if (!validUser) {
+            res.status(404).json(errors)
         } else {
-
-
             // Get user by email
-            const user = await userModel.findOne({ email: email })
+            const user = await userModel.findOne({ email: req.body.email })
 
             // Check password
-            if (user && (await bcrypt.compare(password, user.password))) {
+            if (user && (await bcrypt.compare(req.body.password, user.password))) {
                 res.status(201).json({
-                    _id: user.id,
-                    fullName: user.firstName ,
-                    lastName: user.lastName,
-                    email: user.email,
-                    userToken: generateToken(user.id)
+                    userToken: generateToken(user._id)
                 })
             } else {
                 res.status(404).json({
-                    message: 'Invalid email or password'
+                    message: 'Incorrect email or password'
                 })
             }
         }
