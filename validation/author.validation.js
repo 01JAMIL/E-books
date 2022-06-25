@@ -1,10 +1,10 @@
 const validator = require('validator')
 
 
-module.exports = function validateAuthor (data, file) {
+module.exports = function validateAuthor (data, files) {
     let errors = {}
 
-    if (file === undefined) {
+    if (files.image === undefined) {
         errors.imageError = 'Author image is required!' 
     }
 

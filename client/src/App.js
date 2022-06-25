@@ -6,6 +6,7 @@ import { Footer } from './components/Footer';
 import { SignIn } from './components/Signin';
 import { SignUp } from './components/Signup';
 import { useEffect, useState } from 'react';
+import { AuthorDetails } from './components/AuthorDetails';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           />
           <Route path='/signin' element={!loggedIn ? <SignIn setLoggedIn={setLoggedIn} /> : <Navigate to='/home' replace />} />
           <Route path='/signup' element={!loggedIn ? <SignUp /> : <Navigate to='/home' replace />} />
+          <Route path='/author/:id' element={<AuthorDetails />} />
         </Routes>
         <Footer />
       </Router>

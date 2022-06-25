@@ -14,6 +14,10 @@ const BookSchema = new schema({
         type: String,
         required: true
     },
+    pdf: {
+        type: String,
+        required: true
+    },
     language: {
         type: String,
         required: true

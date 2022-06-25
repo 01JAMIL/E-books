@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export const Author = ({ id }) => {
 
@@ -20,7 +21,9 @@ export const Author = ({ id }) => {
     return (
         <>
             <div>
-                {author.firstName + ' ' + author.lastName}
+                <Link to={`/author/${id}`} className="hover:underline hover:text-slate-600">
+                    {author.firstName + ' ' + author.lastName}
+                </Link>
             </div>
         </>
     )

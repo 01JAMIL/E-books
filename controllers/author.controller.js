@@ -23,15 +23,20 @@ const getAuthorById = async (req, res) => {
 }
 
 const postAuthor = async (req, res) => {
-    const { errors, valid } = validateAuthor(req.body, req.file)
+    const { errors, valid } = validateAuthor(req.body, req.files)
     try {
         if (!valid) {
             res.status(404).json(errors)
         } else {
+
+            const authorImageName = 'author' + Date.now() + '-' + req.files.image.name
+
+            req.files.image.mv('./uploads/' + authorImageName)
+
             const author = {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                image: req.file.filename,
+                image: authorImageName,
                 country: req.body.country,
                 birthday: req.body.birthday
             }
@@ -59,11 +64,11 @@ const updateAuthorById = async (req, res) => {
 
             if (req.file !== undefined) {
                 const authorById = await authorModel.findOne({ _id: req.params.authorId })
-             
-                fs.unlinkSync('uploads/' + authorById.image , function (err) {
+
+                fs.unlinkSync('uploads/' + authorById.image, function (err) {
                     if (err) throw err
                 });
-                
+
                 author.image = req.file.filename
             }
 

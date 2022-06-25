@@ -1,11 +1,15 @@
 const validator = require('validator')
 
 
-module.exports = function validateBook (data, file) {
+module.exports = function validateBook (data, files) {
     let errors = {}
 
-    if (file === undefined) {
+    if (files.image === undefined) {
         errors.imageError = 'Author image is required!' 
+    }
+
+    if (files.pdf === undefined) {
+        errors.pdfError = 'Bokk pdf is required!' 
     }
 
     if (validator.isEmpty(data.title)) {

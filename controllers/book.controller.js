@@ -26,21 +26,29 @@ const getBookById = async (req, res) => {
 }
 
 const postBook = async (req, res) => {
-    const {errors, valid} = validateBook(req.body, req.file)
+    const { errors, valid } = validateBook(req.body, req.files)
     try {
         if (!valid) {
             res.status(404).json(errors)
         } else {
+
+            const bookImageName = 'book' + Date.now() + '-' + req.files.image.name
+            const bookPdfName = 'book' + Date.now() + '-' + req.files.pdf.name
+
+            req.files.image.mv('./uploads/' + bookImageName)
+            req.files.pdf.mv('./uploads/' + bookPdfName)
+
+
             const bookObj = {
                 title: req.body.title,
                 country: req.body.country,
-                image: req.file.filename,
+                image: bookImageName,
+                pdf: bookPdfName,
                 language: req.body.language,
                 pages: req.body.pages,
                 year: req.body.year,
                 author: req.body.author
             }
-            //console.log(req.body)
             await bookModel.create(bookObj)
             res.status(201).json(bookObj)
         }
@@ -50,7 +58,7 @@ const postBook = async (req, res) => {
 }
 
 const updateBookById = async (req, res) => {
-    const {errors, valid} = validateBook(req.body, req.file)
+    const { errors, valid } = validateBook(req.body, req.file)
     try {
         if (!valid) {
             res.status(404).json(errors)
@@ -63,18 +71,18 @@ const updateBookById = async (req, res) => {
                 year: req.body.year,
                 author: req.body.author
             }
-    
+
             if (req.file !== undefined) {
-                
+
                 const bookById = await bookModel.findOne({ _id: req.params.bookId })
-             
-                fs.unlinkSync('uploads/' + bookById.image , function (err) {
+
+                fs.unlinkSync('uploads/' + bookById.image, function (err) {
                     if (err) throw err
                 });
-                
+
                 bookObj.image = req.file.filename
             }
-    
+
             const updatedBook = await bookModel.findOneAndUpdate(
                 { _id: req.params.bookId },
                 bookObj,

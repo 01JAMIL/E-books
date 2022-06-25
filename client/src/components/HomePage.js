@@ -3,9 +3,10 @@ import phoneLogo from '../assets/phone.png'
 import pcLogo from '../assets/pc.png'
 import devopsLogo from '../assets/devops.png'
 import axios from 'axios'
+import jsFileDownload from 'js-file-download'
 import { Author } from './Author'
 
-export const HomePage = () => {
+export const HomePage = ({ loggedIn }) => {
 
 
     const [books, setBooks] = useState([])
@@ -21,6 +22,16 @@ export const HomePage = () => {
 
         getBooks()
     }, [])
+
+    const downloadFile = async (fileName, bookTitle) => {
+        await axios({
+            method: 'GET',
+            url: '/uploads/' + fileName,
+            responseType: 'blob'
+        }).then(res => {
+            jsFileDownload(res.data, bookTitle + '.pdf')
+        })
+    }
 
     return (
         <>
@@ -104,17 +115,16 @@ export const HomePage = () => {
                                                         Pages: {book.pages}
                                                     </small>
                                                     <small className="block mx-2 my-2">
-                                                        Year: {book.year.substr(-4)}
+                                                        Year: {book.year.substr(0, 4)}
                                                     </small>
                                                 </div>
 
-                                                <div className="flex mt-6">
-                                                    <button className="m-2">Download book</button>
-                                                    <button className="m-2">Love book</button>
-                                                </div>
+                                                {loggedIn && <div className="flex mt-4">
+                                                    <button className="m-2 p-1 rounded-lg hover:bg-slate-100" onClick={() => downloadFile(book.pdf, book.title)}>
+                                                        <i className="fa-solid fa-download fa-lg"></i> download
+                                                    </button>
+                                                </div>}
                                             </div>
-
-
 
                                         </div>
                                     </div>
