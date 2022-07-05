@@ -6,6 +6,7 @@ import { StepTwoForm } from './StepTwoForm'
 
 export const SignUp = () => {
 
+  const [verified, setVerified] = useState(false)
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
     firstName: '',
@@ -31,7 +32,7 @@ export const SignUp = () => {
   return (
     <>
       <div className="sign-container flex justify-center">
-        <div className="container-content mt-4">
+        {!verified ? <div className="container-content mt-4">
           <div className="rounded border border-2 p-1">
             <div className="text-3xl text-center p-2">Sign up</div>
             {
@@ -63,6 +64,7 @@ export const SignUp = () => {
                 form={form}
                 setForm={setForm}
                 prevStep={prevStep}
+                setVerified={setVerified}
               />
             }
 
@@ -73,7 +75,17 @@ export const SignUp = () => {
 
             </div>
           </div>
-        </div>
+        </div> :
+
+          <div className="mt-20 h-72 w-96 bg-green-400 rounded drop-shadow-md">
+              <div className="text-center text-white mt-6 text-2xl font-bold">
+                  Email verified successfully!
+              </div>
+              <div className="flex justify-center items-center h-full -mt-10 text-8xl">
+              <i className="fa-solid fa-circle-check text-white fa-beat"></i>
+              </div>
+          </div>
+        }
       </div>
     </>
   )

@@ -47,7 +47,13 @@ const UserSchema = new schema({
             ref: 'book',
             required: false
         }
-    ]
+    ] , 
+
+    verified : {
+        type: Boolean,
+        default: false
+    }
+
 
 }, { timestamps: true })
 

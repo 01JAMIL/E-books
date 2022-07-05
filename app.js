@@ -7,6 +7,8 @@ const fileUpload = require('express-fileupload')
 // .env file configiration
 require('dotenv').config();
 
+const { mailTransport } = require('./utils/sendMail')
+
 
 const bookRouter = require('./routes/book.route');
 const authorRouter = require('./routes/author.route');

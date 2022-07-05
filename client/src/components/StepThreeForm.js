@@ -1,11 +1,14 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+//import { useNavigate } from 'react-router-dom'
 import { validateStepThreeForm } from '../validation/RegisterFormValidation'
-export const StepThreeForm = ({ form, setForm, prevStep }) => {
+import { VerifyEmail } from './VerifyEmail'
+export const StepThreeForm = ({ form, setForm, prevStep, setVerified }) => {
 
     const [formErrors, setErrors] = useState({})
-    const navigate = useNavigate()
+    const [registred, setRegistred] = useState(false)
+    const [registredUser, setRegisterUser] = useState({})
+    //const navigate = useNavigate()
 
     const changeHandler = (e) => {
         setForm({
@@ -15,8 +18,14 @@ export const StepThreeForm = ({ form, setForm, prevStep }) => {
     }
 
     const registerUser = async () => {
-        await axios.post('/api/user', form).then(res => {
-            navigate('/signin', { replace: true })
+        await axios.post('/api/user', form).then(async (res) => {
+            setRegistred(true)
+            await axios.get('/api/user/me', {
+                headers: { 'Authorization': `Bearer ${res.data.userToken}` }
+            }).then(res => {
+                setRegisterUser(res.data)
+                console.log(registredUser)
+            })
         }).catch(err => {
             console.log(err)
         })
@@ -36,7 +45,7 @@ export const StepThreeForm = ({ form, setForm, prevStep }) => {
 
     return (
         <>
-            <form onSubmit={submitHandler}>
+            {registred === false ? <form onSubmit={submitHandler}>
                 <div className="px-2 h-full">
                     <span className="block text-sm font-medium text-slate-700 mb-2">User name</span>
                     <input
@@ -75,7 +84,9 @@ export const StepThreeForm = ({ form, setForm, prevStep }) => {
                         Sign up
                     </button>
                 </div>
-            </form>
+            </form> :
+                <VerifyEmail id={registredUser._id} />
+            }
         </>
     )
 }
