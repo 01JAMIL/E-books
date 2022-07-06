@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { AuthorDetails } from './components/AuthorDetails'
 import axios from 'axios'
 import { VerifyEmail } from './components/VerifyEmail'
-import EmailVerified from './components/EmailVerified'
+import { isExpired } from 'react-jwt'
 
 function App() {
 
@@ -22,15 +22,22 @@ function App() {
     const verifyToken = async () => {
       const token = localStorage.getItem('userToken')
       if (token) {
-        setLoggedIn(true)
+        const expired = isExpired(token)
+        //console.log(expired)
 
-        await axios.get('/api/user/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }).then(res => {
-          setConnectedUser(res.data)
-        }).catch(err => {
-          console.error(err)
-        })
+        if (expired) {
+          localStorage.removeItem('userToken')
+          setLoggedIn(false)
+        } else {
+          setLoggedIn(true)
+          await axios.get('/api/user/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }).then(res => {
+            setConnectedUser(res.data)
+          }).catch(err => {
+            console.error(err)
+          })
+        }
       }
     }
 
