@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
                     // Send email to the user
 
-                    mailTransport().sendMail({
+                    await mailTransport().sendMail({
                         from: process.env.EMAIL_USER,
                         to: user.email,
                         subject: 'Verify your email',
@@ -65,9 +65,8 @@ const registerUser = asyncHandler(async (req, res) => {
                                     <small>This code expires in <b>1 hour</b></small>
                                 </div>
                             </div>`
-                    }).then(() => console.log('Email sent'))
-                        .catch(err => console.log(err))
-
+                    })
+                    
                     res.status(201).json({
                         userToken: generateToken(user._id)
                     })
