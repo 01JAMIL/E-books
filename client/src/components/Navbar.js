@@ -8,6 +8,7 @@ export const Navbar = ({ loggedIn, setLoggedIn }) => {
     const [active, setActive] = useState(false)
     const [dropdown, setDropdown] = useState(false)
     const [user, setUser] = useState({})
+    const [userName, setUserName] = useState('')
     const navigate = useNavigate()
 
     const getUserData = async () => {
@@ -16,8 +17,8 @@ export const Navbar = ({ loggedIn, setLoggedIn }) => {
             await axios.get('/api/user/me', {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(res => {
-
                 setUser(res.data)
+                setUserName(res.data.firstName + ' ' + res.data.lastName)
             })
         }
     }
@@ -25,8 +26,6 @@ export const Navbar = ({ loggedIn, setLoggedIn }) => {
     useEffect(() => {
         getUserData()
     }, [loggedIn]);
-
-    const userName = user.firstName + ' ' + user.lastName
 
 
     const openNav = () => {
@@ -77,7 +76,7 @@ export const Navbar = ({ loggedIn, setLoggedIn }) => {
                         <>
                             <div onClick={() => setDropdown(!dropdown)}>
                                 <li className="navbar-list-item rounded min-w-150 m-1 h-11 hover:text-yellow-300">
-                                    {userName} <i className={`fa-solid ${!dropdown ? 'fa-caret-down' : 'fa-caret-up'}`}></i>
+                                    {userName ? userName : ''} <i className={`fa-solid ${!dropdown ? 'fa-caret-down' : 'fa-caret-up'}`}></i>
                                 </li>
 
                                 {dropdown &&

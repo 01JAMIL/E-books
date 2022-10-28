@@ -11,27 +11,43 @@ export const HomePage = ({ loggedIn }) => {
 
     const [books, setBooks] = useState([])
 
-    useEffect(() => {
-        const getBooks = async () => {
-            await axios.get('/api/book').then(res => {
-                setBooks(res.data)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
-
-        getBooks()
-    }, [])
+    const getBooks = async () => {
+        await axios.get('/api/book').then(res => {
+            setBooks(res.data)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
 
     const downloadFile = async (fileName, bookTitle) => {
         await axios({
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+            },
             url: '/uploads/' + fileName,
             responseType: 'blob'
         }).then(res => {
-            jsFileDownload(res.data, bookTitle + '.pdf')
+            const blob = new Blob([res.data])
+
+            const a = document.createElement('a')
+            a.setAttribute('style', 'display:none;')
+            document.body.appendChild(a)
+            a.href = URL.createObjectURL(blob)
+            a.target = '_blank'
+            a.download = `${fileName + '.pdf'}`
+
+            a.click();
+            document.body.removeChild(a)
+
         })
     }
+
+    useEffect(() => {
+        getBooks()
+    }, [])
+
+
 
     return (
         <>
